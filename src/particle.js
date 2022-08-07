@@ -16,7 +16,13 @@ export default class Particle {
     this.r = { value: r, mutate: false };
 
     this.index = index;
-    this.color = chroma.random();
+
+    let color = chroma.random();
+    if (color.get('hsl.l') < 0.1) {
+      color.brighten()
+    }
+
+    this.color = color;
     this.mutateTimer = null;
   }
 
@@ -151,7 +157,7 @@ export default class Particle {
     const coords = `(${x.coord.toFixed(0)};${y.coord.toFixed(0)};${z.toFixed(0)})`;
     const speed = `(${x.speed.toFixed(1)};${y.speed.toFixed(1)})`;
     const accel = `(${x.accel.toFixed(3)};${y.accel.toFixed(3)})`;
-    return `${this.index} ${color.hex()} ${coords} r=${r.value} V=${speed} a=${accel}`
+    return `${this.index} ${color.hex()} ${coords} r=${r.value.toFixed(0)} V=${speed} a=${accel}`
   }
 
   static makeGhosts() {

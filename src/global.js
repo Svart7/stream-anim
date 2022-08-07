@@ -37,6 +37,13 @@ class GlobalState {
     return minSide * canvasSideMulti;
   }
 
+  getParticleIndexes() {
+    const indexes = Object.values(this.particles)
+      .map(particle => particle.index);
+    indexes.sort((a, b) => a - b);
+    return indexes;
+  }
+
   getSize() {
     return {
       halfWidth: this.getHalfSide('width'),

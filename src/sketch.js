@@ -3,7 +3,7 @@ import globalState from "./global";
 import sh_vert from "./shaders/sh.vert";
 import sh_frag from "./shaders/sh.frag";
 import {
-  cameraZ, canvasSideMulti,
+  cameraZ,
   fontSize,
   logStateInterval, maxRadiusRatio, minRadiusRatio,
   setupMidiDelay,
@@ -27,10 +27,7 @@ export function sketch(p) {
   }
 
   p.setup = function () {
-    const { particles } = globalState;
-    const options = globalState.getSize();
     const { innerWidth, innerHeight } = window;
-
     const radiusVal = globalState.getMinSide();
     globalState.radiusRange = [minRadiusRatio * radiusVal, maxRadiusRatio * radiusVal];
     p.createCanvas(innerWidth, innerHeight, p.WEBGL);
@@ -40,13 +37,6 @@ export function sketch(p) {
     const texture = p.createGraphics(innerWidth, innerHeight, p.WEBGL);
     texture.noStroke();
     globalState.shaderTexture = texture;
-
-    [...Array(totalParticles).keys()]
-      .map(index => new Particle(index, options))
-      .forEach(particle => {
-        particle.temporaryDisallowMutate();
-        particles[particle.index] = particle;
-      });
 
     const halfWidth = innerWidth / 2;
     const halfHeight = innerHeight / 2;
@@ -61,14 +51,26 @@ export function sketch(p) {
 
   p.draw = function () {
     drawBg();
+
     const { particles, ghostParticles } = globalState;
     const options = globalState.getSize();
+    const indexes = globalState.getParticleIndexes();
+    const particlesBefore = indexes.length;
 
-    const indexes = options.indexes = Object.keys(particles).sort();
-    indexes.forEach(i => particles[i].step(options));
+    if (particlesBefore < totalParticles) {
+      const newIndex = particlesBefore === 0 ? 1 : indexes[particlesBefore-1] + 1;
+      const newParticle = new Particle(newIndex, options);
+
+      indexes.push(newIndex)
+      particles[newIndex] = newParticle;
+
+      newParticle.temporaryDisallowMutate();
+    }
+
+    options.indexes = indexes;
+    Object.values(particles).forEach(particle => particle.step(options));
 
     const keepGhost = ghostParticles.filter(ghost => ghost.step());
-
     if (keepGhost.length < ghostParticles.length) {
       ghostParticles.length = 0;
       ghostParticles.push(...keepGhost);

@@ -29,7 +29,7 @@ export default class ParticleGhost {
     }
 
     const ratio = timeRemaining / ghostDisappearAfter;
-    let ghostColor = chroma.mix(color, mixColor,ratio * 0.9 + 0.1);
+    let ghostColor = chroma.mix(mixColor, color,ratio * 0.4 + 0.6);
     ghostColor = ghostColor.alpha(ratio)
 
     p.push()
