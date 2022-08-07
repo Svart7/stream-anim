@@ -15,7 +15,7 @@ const fontSize = 26;
 const canvasSideMulti = 1;
 const showGrid = false;
 const cameraZ = 1500;
-const shaderCanvasSize = 256;
+const shaderCanvasSize = 1024;
 let shader;
 let shaderTexture;
 
@@ -156,9 +156,9 @@ function sketch(p) {
     }
   }
 
-  p.windowResized = function () {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
-  }
+  // p.windowResized = function () {
+  //   p.resizeCanvas(p.windowWidth, p.windowHeight);
+  // }
 
   p.preload = function () {
     font = p.loadFont(loadedFont)
