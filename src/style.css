@@ -2,3 +2,15 @@ body {
     margin: 0;
     padding: 0;
 }
+
+.right-bottom {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+}
+
+.left-bottom {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+}
