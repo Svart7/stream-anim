@@ -1,11 +1,16 @@
 import loadedFont from "@fontsource/roboto/files/roboto-all-700-normal.woff";
 import globalState from "./global";
-import sh_vert from "./shaders/sh.vert";
-import sh_frag from "./shaders/sh.frag";
+import shVert from "./assets/shaders/sh.vert";
+import bdSample from "./assets/kick001.wav";
+import shFrag from "./assets/shaders/sh.frag";
 import {
+  bdInterval,
   cameraZ,
+  audioVolume,
   fontSize,
-  logStateInterval, maxRadiusRatio, minRadiusRatio,
+  logStateInterval,
+  maxRadiusRatio,
+  minRadiusRatio,
   setupMidiDelay,
   shaderCanvasK,
   shaderSpeed,
@@ -13,7 +18,7 @@ import {
   totalParticles
 } from "./constants";
 import Particle from "./particle";
-import {setupMidi} from "./midi";
+import {makeBoom, setupMidi, toggleBeat} from "./midi";
 
 /**
  * @param p {p5}
@@ -23,7 +28,24 @@ export function sketch(p) {
 
   p.preload = function () {
     globalState.mainFont = p.loadFont(loadedFont)
-    globalState.shader = p.loadShader(sh_vert, sh_frag);
+    globalState.shader = p.loadShader(shVert, shFrag);
+  }
+
+  p.touchStarted = function() {
+    const { touchRequired } = globalState;
+
+    if (touchRequired) {
+      const audioContext = p.getAudioContext();
+      globalState.touchRequired = false;
+
+      audioContext.resume().then(() => {
+        // noinspection JSCheckFunctionSignatures
+        globalState.bdSample = p.loadSound(bdSample);
+        p.outputVolume(audioVolume);
+        console.log('audio activated, loaded ', globalState.bdSample);
+        toggleBeat();
+      });
+    }
   }
 
   p.setup = function () {
@@ -52,8 +74,20 @@ export function sketch(p) {
   p.draw = function () {
     drawBg();
 
-    const { particles, ghostParticles } = globalState;
+    const { mainFont, particles, ghostParticles, touchRequired } = globalState;
     const options = globalState.getSize();
+
+    if (touchRequired) {
+      const {halfHeight, halfWidth} = options;
+      p.fill(0, 0, 0, 0.5);
+      p.rect(-halfWidth, -halfHeight, halfWidth * 2, halfHeight * 2);
+      p.textFont(mainFont, halfHeight / 10);
+      p.fill("white");
+      p.textAlign(p.CENTER, p.CENTER);
+      p.text("Touch anywhere\nto start", 0, 0);
+      return;
+    }
+
     const indexes = globalState.getParticleIndexes();
     const particlesBefore = indexes.length;
 
@@ -118,7 +152,7 @@ function drawBg() {
 }
 
 function printInfo() {
-  let {fps, midiEnabled, p, mainFont, ghostParticles, particles} = globalState;
+  let {fps, midiEnabled, p, bdSample, bdBeatInterval, mainFont, ghostParticles, particles} = globalState;
   const {width, height} = p;
 
   p.textFont(mainFont, fontSize);
@@ -129,14 +163,23 @@ function printInfo() {
   if (Math.abs(fps - currentFps) > 30 || (p.frameCount % currentFps) === 0)
     globalState.fps = fps = currentFps;
 
-  let str = `${Object.keys(particles).length} particles`;
+  let str = '';
   const ghostsCount = ghostParticles.length;
   if (ghostsCount)
-    str += ` | ${ghostsCount} ghosts`
+    str = `${ghostsCount} ghosts | `
+
+  str += `${Object.keys(particles).length} particles`;
 
   if (midiEnabled)
-    str = `MIDI | ${str} `;
-  str += ` | ${fps}fps`
+    str += ` | MIDI`;
 
-  p.text(str, width / 2, -height / 2);
+  if (bdSample)
+    str += ` | Audio`
+
+  if (bdBeatInterval)
+    str += ` | Beat`
+
+  str += ` | ${fps}fps `
+
+  p.text(str, -5 + width / 2, 5 - height / 2);
 }

@@ -1,15 +1,18 @@
-import {canvasSideMulti,} from "./constants";
+import {audioVolume, canvasSideMulti,} from "./constants";
 
 const canvasHalfSideMulti = 0.5 * canvasSideMulti;
 
 class GlobalState {
   constructor() {
+    this.touchRequired = audioVolume > 0;
     this.radiusRange = [0, 10];
     this.mainFont = undefined;
     this.shader = undefined;
     this.shaderTexture = undefined;
-    this.p = undefined;
+    this.bdSample = undefined;
     this.midiEnabled = false;
+    this.bdBeatInterval = null;
+    this.p = undefined;
     this.fps = 60;
     this.ghostParticles = [];
     this.particles = {};

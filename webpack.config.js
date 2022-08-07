@@ -1,6 +1,7 @@
  const path = require('path');
  const HtmlWebpackPlugin = require('html-webpack-plugin');
  const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+ const ProvidePlugin = require("webpack/lib/ProvidePlugin");
 
  module.exports = {
    mode: 'development',
@@ -18,14 +19,18 @@
         use: ['style-loader', 'css-loader'],
       },
       {
-        test: /\.(vert|frag|woff)$/i,
+        test: /\.(vert|frag|woff|wav)$/i,
         type: 'asset/resource',
       },
     ],
    },
    plugins: [
      new HtmlWebpackPlugin({
-       title: 'Development',
+       title: process.env.PAGE_TITLE || "Visualization of things",
+     }),
+
+     new ProvidePlugin({
+       p5: 'p5'
      }),
 
      new MiniCssExtractPlugin(),

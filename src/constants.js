@@ -13,7 +13,10 @@ export const radiusStepMaxDelta = 0.5;
 export const fontSize = 16;
 export const canvasSideMulti = 1;
 export const shaderSpeed = 1;
+
+export const audioVolume = 0.25;
 export const setupMidiDelay = 10000;
+export const bdInterval = 1000;
 
 export const ghostDisappearAfter = 500;
 export const ghostRadiusRatio = 12;

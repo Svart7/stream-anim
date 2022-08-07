@@ -1,10 +1,12 @@
 import globalState from "./global";
 import {WebMidi} from "webmidi";
 import Particle from "./particle";
+import {bdInterval} from "./constants";
 
 
 export function setupMidi() {
   const enable = WebMidi.enable();
+
   enable.then(() => {
     let inFiltered = WebMidi.inputs.find(({ name }) => {
       return name.indexOf('MkIII') !== -1 && name.indexOf('MIDI') !== -1;
@@ -36,5 +38,29 @@ function captureMidi(e) {
 
   if (type === 'noteon') {
     Particle.makeGhosts();
+  }
+}
+
+export function makeBoom() {
+  const { bdSample } = globalState;
+  if (bdSample)
+    bdSample.play();
+
+  Particle.makeGhosts();
+}
+
+export function toggleBeat() {
+  const { bdBeatInterval } = globalState;
+
+  if (bdBeatInterval) {
+    clearInterval(bdBeatInterval);
+    globalState.bdBeatInterval = null;
+    console.log('beat disabled');
+    return
+  }
+
+  if (bdInterval) {
+    console.log(`beat enabled`);
+    globalState.bdBeatInterval = setInterval(makeBoom, bdInterval);
   }
 }
