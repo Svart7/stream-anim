@@ -21,7 +21,6 @@ uniform mat4 uProjectionMatrix;
 // Multiplying uModelViewMatrix * vec4(aPosition, 1.0) would move the object into its world position in front of the camera
 uniform mat4 uModelViewMatrix;
 
-
 varying vec2 vTexCoord;
 
 void main() {
