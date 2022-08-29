@@ -160,9 +160,16 @@ export default class Particle {
     return `${this.index} ${color.hex()} ${coords} r=${r.value.toFixed(0)} V=${speed} a=${accel}`
   }
 
-  static makeGhosts() {
+  static makeGhosts(i=-1) {
     const { particles, ghostParticles } = globalState;
-    const ghosts = Object.values(particles).map(particle => particle.makeGhost());
+    let ghosts;
+
+    if (i === -1) {
+      ghosts = Object.values(particles).map(particle => particle.makeGhost());
+    } else {
+      ghosts = [particles[i].makeGhost(), ];
+    }
+
     ghostParticles.push(...ghosts);
   }
 }

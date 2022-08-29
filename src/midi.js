@@ -1,15 +1,17 @@
 import globalState from "./global";
 import {WebMidi} from "webmidi";
 import Particle from "./particle";
-import {bdInterval} from "./constants";
+import {bdInterval, totalParticles} from "./constants";
 
 
 export function setupMidi() {
   const enable = WebMidi.enable();
 
   enable.then(() => {
+    console.debug(WebMidi.inputs.map(i => i.name));
+
     let inFiltered = WebMidi.inputs.find(({ name }) => {
-      return name.indexOf('MkIII') !== -1 && name.indexOf('MIDI') !== -1;
+      return name.indexOf('IAC') !== -1 && name.indexOf('1') !== -1;
     });
 
     if (inFiltered) {
@@ -36,8 +38,8 @@ function captureMidi(e) {
 
   console.log(`Received event ${type} ${dataBytes}`, e);
 
-  if (type === 'noteon') {
-    Particle.makeGhosts();
+  if (type === 'noteon' && dataBytes[0] === 36) {
+    Particle.makeGhosts(Math.ceil(Math.random() * totalParticles));
   }
 }
 

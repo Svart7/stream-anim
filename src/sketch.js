@@ -4,7 +4,6 @@ import shVert from "./assets/shaders/sh.vert";
 import bdSample from "./assets/kick001.wav";
 import shFrag from "./assets/shaders/sh.frag";
 import {
-  bdInterval,
   cameraZ,
   audioVolume,
   fontSize,
@@ -18,7 +17,7 @@ import {
   totalParticles
 } from "./constants";
 import Particle from "./particle";
-import {makeBoom, setupMidi, toggleBeat} from "./midi";
+import {setupMidi, toggleBeat} from "./midi";
 
 /**
  * @param p {p5}

@@ -6,7 +6,9 @@
       <script value="start" />
     </scripts>
     <node-interpreter value="project" />
-    <envs />
+    <envs>
+      <env name="PAGE_TITLE" value="Visualization Development" />
+    </envs>
     <method v="2" />
   </configuration>
 </component>

@@ -1,4 +1,4 @@
-export const totalParticles = 20;
+export const totalParticles = 5;
 export const lessMaxAccel = 80000;
 export const maxSpeed = 6;
 
@@ -14,7 +14,7 @@ export const fontSize = 16;
 export const canvasSideMulti = 1;
 export const shaderSpeed = 1;
 
-export const audioVolume = 0.25;
+export const audioVolume = 0; // 0 to disable using audio
 export const setupMidiDelay = 10000;
 export const bdInterval = 1000;
 
